@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "module": "node16",           // <-- 'commonjs'-ről átírva 'node16'-ra
+    "moduleResolution": "node16", // <-- Ez marad
     "types": ["jest", "node"]
   },
   "include": ["jest.config.ts", "src/**/*.ts"]
