@@ -1,3 +1,9 @@
 {
-  "singleQuote": true
+  "singleQuote": true, // TS/JS standard: egyszeres idézőjelek a dupla helyett.
+  "printWidth": 100, // Kicsit szélesebb sorok, hogy ne tördelje szét az Angular template-eket és a NestJS dekorátorokat.
+  "tabWidth": 2, // 2 szóközös behúzás.
+  "useTabs": false, // Tiltjuk a valódi tab karaktereket, szóközöket használunk.
+  "semi": true, // Kötelező pontosvessző a sorok végén.
+  "trailingComma": "all", // Utolsó elem után is tesz vesszőt (tömbök/objektumok). Így a Git diff csak 1 sort mutat változásként új elem hozzáadásakor.
+  "endOfLine": "lf" // Kötelező Linux/Mac soremelés (LF). Megakadályozza a Windows (CRLF) vs Linux konfliktusokat a GitHub Action környezetben.
 }
