@@ -1,0 +1,47 @@
+name: Enterprise CI Pipeline
+
+# 1. TRIGGER: Mikor induljon el a folyamat?
+on:
+  push:
+    branches: [ main ] # Ha közvetlenül a main ágra megy a push (bár ezt a branch protection majd tiltja)
+  pull_request:
+    branches: [ main ] # Minden alkalommal, ha valaki nyit vagy frissít egy PR-t a main felé
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Linux konténeren futtatjuk (leggyorsabb és legolcsóbb)
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # KRITIKUS AZ NX-HEZ! A '0' azt jelenti, hogy a teljes Git történelmet letölti.
+          # Enélkül az Nx nem tudná összehasonlítani a te ágadat a main-nel, hogy megállapítsa az 'affected' projekteket.
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20 # Modern, stabil Node verzió
+          cache: 'npm' # Felgyorsítja a telepítést a node_modules gyorsítótárazásával
+
+      - name: Install dependencies
+        # Enterprise környezetben mindig 'npm ci' (Clean Install)-t használunk 'npm install' helyett.
+        # Ez szigorúan a package-lock.json-t követi, és garantálja, hogy senki sem rontja el a verziókat egy véletlen frissítéssel.
+        run: npm ci
+
+      - name: Configure Nx Git SHAs
+        # Ez a plugin állítja be a környezeti változókat, hogy az Nx tudja, mi a base (main) és a head (a te ágad) a diff-hez.
+        uses: nrwl/nx-set-shas@v4
+
+      - name: Run ESLint
+        # Csak azokat az appokat/libeket ellenőrzi, amik ténylegesen módosultak a main-hez képest.
+        run: npx nx affected -t lint
+
+      - name: Run Unit Tests
+        # Csak az érintett projektek tesztjeit futtatja le.
+        run: npx nx affected -t test
+
+      - name: Run Build
+        # Csak az érintett projekteket építi újra, hogy ellenőrizze, lefordulnak-e TS hibák nélkül.
+        run: npx nx affected -t build
