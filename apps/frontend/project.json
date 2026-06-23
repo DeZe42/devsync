@@ -8,9 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/frontend",
@@ -23,9 +21,7 @@
             "input": "apps/frontend/public"
           }
         ],
-        "styles": [
-          "apps/frontend/src/styles.scss"
-        ]
+        "styles": ["apps/frontend/src/styles.scss"]
       },
       "configurations": {
         "production": {
@@ -61,6 +57,10 @@
         "development": {
           "buildTarget": "frontend:build:development"
         }
+      },
+      "dependsOn": ["backend:serve"],
+      "options": {
+        "proxyConfig": "apps/frontend/proxy.conf.json"
       }
     },
     "lint": {
