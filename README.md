@@ -1,5 +1,56 @@
 # Devsync
 
+# DevSync: Engineering Metrics & Productivity Platform
+
+## Project Overview
+DevSync is an enterprise-grade, full-stack application designed to aggregate, analyze, and visualize engineering productivity metrics. By synchronizing repository data and evaluating Pull Requests, DevSync provides actionable insights into team performance, code quality, and delivery speed (focusing on DORA metrics like Lead Time).
+
+Beyond standard data visualization, DevSync features a custom-built Artificial Intelligence module that analyzes structural patterns in Pull Requests to proactively predict deployment risks.
+
+## Core Features
+* **Data Synchronization Engine:** Asynchronous background processing to fetch and normalize Pull Request data from external Git providers without blocking the main event loop.
+* **Advanced Metric Calculation:** Automated tracking of developer productivity metrics, specifically focusing on `lead time`, PR `status` lifecycles, and `author` performance analytics.
+* **Real-Time Analytics Dashboard:** A modern, reactive SPA providing live data visualizations, updated instantly via WebSockets as background synchronizations complete.
+* **AI-Powered PR Risk Predictor:** A custom-built neural network architecture that processes 4 distinct input values from a given Pull Request to output a binary (Yes/No) decision, predicting the likelihood of the PR breaking the build or introducing critical bugs.
+
+## Architecture & Tech Stack
+This project is built using a modern, scalable Monorepo architecture managed by **Nx**, ensuring strict boundary enforcement and code sharing between the frontend and backend.
+
+### Backend (NestJS v11)
+* **Framework:** NestJS (TypeScript) utilizing enterprise design patterns (Dependency Injection, Repository Pattern, CQRS).
+* **Database:** PostgreSQL.
+* **ORM:** TypeORM for complex data modeling and persistence (e.g., `PullRequestEntity`).
+* **Async Processing:** Redis & BullMQ for handling heavy background synchronization tasks.
+* **Real-time Communication:** WebSockets (Socket.io).
+
+### Frontend (Angular v21)
+* **Framework:** Angular strictly utilizing Standalone Components (no NgModules).
+* **State Management:** Angular Signals for highly optimized, reactive state updates.
+* **Data Visualization:** Chart.js / ECharts integration.
+
+### Shared Infrastructure
+* **Shared Libraries:** Internal Nx libraries (e.g., `@devsync/shared-types`) to guarantee 100% type safety and contract synchronization between the Angular client and NestJS API.
+* **Quality Assurance:** * Unit & Integration Testing: **Jest** (Targeting 80%+ coverage for business logic).
+    * End-to-End Testing: **Playwright**.
+    * Strict linting (ESLint) and formatting (Prettier).
+
+## CI/CD Pipeline & DevOps
+The repository enforces strict quality gates utilizing **GitHub Actions**:
+* **Parallel Execution:** Linting, Unit Testing, and Building processes run concurrently across isolated Ubuntu containers.
+* **Optimized Caching:** Implements advanced `actions/cache` for `node_modules` and the Nx computation cache to achieve sub-minute pipeline executions.
+* **Security & Integrity:** Automated `npm audit` blocking high-severity vulnerabilities, paired with strict `npm ci` dependency resolution.
+* **Branch Protection:** Main branch is locked behind mandatory Pull Request reviews and successful automated status checks.
+
+## 🗄️ Domain Model Highlights
+The core of the data layer resolves around tracking code changes. The primary model, `PullRequestEntity`, is designed to store complex metadata:
+* `author`: The developer initiating the change.
+* `status`: The current lifecycle stage of the PR (Open, Merged, Closed, Draft).
+* `lead time`: The calculated duration from the first commit to the final merge.
+
+## 👤 Author
+**Zsolt Denes**
+Software Developer
+
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
 ✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
