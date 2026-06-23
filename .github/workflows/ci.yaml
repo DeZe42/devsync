@@ -1,47 +1,58 @@
 name: Enterprise CI Pipeline
 
-# 1. TRIGGER: Mikor induljon el a folyamat?
 on:
   push:
-    branches: [ main ] # Ha közvetlenül a main ágra megy a push (bár ezt a branch protection majd tiltja)
+    branches: [ main ]
   pull_request:
-    branches: [ main ] # Minden alkalommal, ha valaki nyit vagy frissít egy PR-t a main felé
+    branches: [ main ]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest # Linux konténeren futtatjuk (leggyorsabb és legolcsóbb)
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Run Security Audit
+        # Csak a production kód sebezhetőségeit nézzük szigorúan high szinten, 
+        # így a fejlesztői eszközök (linter, tesztelő) zaját kiszűrjük, de a backend/frontend tiszta marad.
+        run: npm audit --audit-level=high --only=prod
+
+  quality-gate:
+    name: Lint, Test & Build
+    runs-on: ubuntu-latest
+    needs: [security-audit] # Csak akkor fut le, ha a biztonsági audit zöld!
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # KRITIKUS AZ NX-HEZ! A '0' azt jelenti, hogy a teljes Git történelmet letölti.
-          # Enélkül az Nx nem tudná összehasonlítani a te ágadat a main-nel, hogy megállapítsa az 'affected' projekteket.
           fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # Modern, stabil Node verzió
-          cache: 'npm' # Felgyorsítja a telepítést a node_modules gyorsítótárazásával
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install dependencies
-        # Enterprise környezetben mindig 'npm ci' (Clean Install)-t használunk 'npm install' helyett.
-        # Ez szigorúan a package-lock.json-t követi, és garantálja, hogy senki sem rontja el a verziókat egy véletlen frissítéssel.
+      - name: Install dependencies (Strict)
+        # Nincs több flag, nincs több trükközés. Tiszta, nyers npm ci.
         run: npm ci
 
-      - name: Configure Nx Git SHAs
-        # Ez a plugin állítja be a környezeti változókat, hogy az Nx tudja, mi a base (main) és a head (a te ágad) a diff-hez.
+      - name: Configure Nx
         uses: nrwl/nx-set-shas@v4
 
       - name: Run ESLint
-        # Csak azokat az appokat/libeket ellenőrzi, amik ténylegesen módosultak a main-hez képest.
-        run: npx nx affected -t lint
+        run: npx nx affected -t lint --max-warnings=0
 
       - name: Run Unit Tests
-        # Csak az érintett projektek tesztjeit futtatja le.
-        run: npx nx affected -t test
+        run: npx nx affected -t test --no-watch --browsers=ChromeHeadless
 
       - name: Run Build
-        # Csak az érintett projekteket építi újra, hogy ellenőrizze, lefordulnak-e TS hibák nélkül.
         run: npx nx affected -t build
