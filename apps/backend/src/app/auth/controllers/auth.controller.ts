@@ -12,7 +12,9 @@ export class AuthController {
     const user = await this.authService.createAdminUser(body.email, body.password);
     
     // Biztonság: Sose küldjük vissza a lehashelt jelszót a frontendnek!
-    const { passwordHash, ...safeUser } = user;
-    return safeUser; 
+    return {
+      id: user.id,
+      email: user.email,
+    }; 
   }
 }
