@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PullRequestsModule } from './pull-requests/pull-requests.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { PullRequestsModule } from './pull-requests/pull-requests.module';
         synchronize: true,      // DEV KÖRNYEZETBEN: automatikusan létrehozza a táblákat
       }),
     }),
-    PullRequestsModule, // Importáljuk a PullRequests modult, hogy a Service-ek és Controller-ek elérjék az Entity-ket
+    PullRequestsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
