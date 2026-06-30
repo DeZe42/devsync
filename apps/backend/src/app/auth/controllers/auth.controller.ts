@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
@@ -16,5 +16,18 @@ export class AuthController {
       id: user.id,
       email: user.email,
     }; 
+  }
+
+  @Post('login')
+  async login(@Body() body: { email: string; password: string }) {
+    // 1. Validáljuk az e-mailt és a jelszót
+    const user = await this.authService.validateUser(body.email, body.password);
+    
+    if (!user) {
+      throw new UnauthorizedException('Hibás e-mail vagy jelszó!');
+    }
+
+    // 2. Kiadjuk a tokent
+    return this.authService.login(user);
   }
 }
