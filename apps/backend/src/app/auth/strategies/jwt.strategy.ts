@@ -12,7 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       // 2. Ha lejárt az 1 óra, könyörtelenül dobja el a kérést.
       ignoreExpiration: false,
       // 3. Ezzel a pecséttel (kulccsal) ellenőrzi, hogy mi állítottuk-e ki a tokent.
-      secretOrKey: configService.get<string>('JWT_SECRET')!,
+      secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
     });
   }
 
