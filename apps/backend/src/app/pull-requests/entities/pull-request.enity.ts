@@ -13,6 +13,9 @@ export class PullRequestEntity implements PullRequest {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({ unique: true })
+  githubPrNumber!: number;
+
   @Column({ type: 'varchar', length: 255 })
   author!: string;
 
@@ -30,4 +33,10 @@ export class PullRequestEntity implements PullRequest {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
+
+  @Column({ type: 'timestamp', nullable: true })
+  mergedAt!: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  openedAt!: Date | null;
 }
