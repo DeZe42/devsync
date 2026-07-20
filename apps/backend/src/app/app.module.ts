@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PullRequestsModule } from './pull-requests/pull-requests.module';
 import { AuthModule } from './auth/auth.module';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -27,6 +28,14 @@ import { AuthModule } from './auth/auth.module';
         autoLoadEntities: true, // Automatikusan betölti a regisztrált Entity-ket
         synchronize: true,      // DEV KÖRNYEZETBEN: automatikusan létrehozza a táblákat
       }),
+    }),
+
+    // Redis kapcsolat beállítása globálisan
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost', // Ha dockerben fut a Redis, vagy a .env-ből is jöhet
+        port: 6379,
+      },
     }),
     PullRequestsModule,
     AuthModule,
