@@ -96,4 +96,46 @@ export class GithubSyncService {
 
     this.logger.log(`Kész! Összesen ${totalSaved} db PR lett szinkronizálva az adatbázisba!`);
   }
+
+  async getAverageLeadTime(): Promise<{ averageLeadTimeHours: number; totalPrsCount: number }> {
+    // 1. Lekérjük az összes merge-elt PR-t, aminek van openedAt és mergedAt értéke
+    const prs = await this.prRepository.find({
+      where: { status: 'MERGED' },
+    });
+
+    if (prs.length === 0) {
+      return { averageLeadTimeHours: 0, totalPrsCount: 0 };
+    }
+
+    let totalLeadTimeMs = 0;
+    let validPrsCount = 0;
+
+    for (const pr of prs) {
+      if (pr.openedAt && pr.mergedAt) {
+        const opened = new Date(pr.openedAt).getTime();
+        const merged = new Date(pr.mergedAt).getTime();
+        
+        // Időkülönbség milliszekundumban
+        const diff = merged - opened;
+        
+        if (diff > 0) {
+          totalLeadTimeMs += diff;
+          validPrsCount++;
+        }
+      }
+    }
+
+    if (validPrsCount === 0) {
+      return { averageLeadTimeHours: 0, totalPrsCount: 0 };
+    }
+
+    // Átlag kiszámítása órában
+    const averageMs = totalLeadTimeMs / validPrsCount;
+    const averageHours = averageMs / (1000 * 60 * 60);
+
+    return {
+      averageLeadTimeHours: Math.round(averageHours * 100) / 100, // Két tizedesjegyre kerekítve
+      totalPrsCount: validPrsCount,
+    };
+  }
 }
