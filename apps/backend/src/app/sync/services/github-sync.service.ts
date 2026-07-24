@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PullRequestEntity } from '../entities/pull-request.enity'; // vagy .entity ha elírás volt
 import { Repository } from 'typeorm';
 import { GithubApiPullRequest } from '@devsync/shared-types';
+import { PullRequestEntity } from '../../pull-requests/entities/pull-request.entity';
 
 @Injectable()
 export class GithubSyncService {

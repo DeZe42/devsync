@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PullRequestsModule } from './pull-requests/pull-requests.module';
 import { AuthModule } from './auth/auth.module';
 import { BullModule } from '@nestjs/bullmq';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { BullModule } from '@nestjs/bullmq';
       },
     }),
     PullRequestsModule,
+    MetricsModule,
     AuthModule,
   ],
   controllers: [AppController],
