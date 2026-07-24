@@ -1,10 +1,10 @@
 import { Controller, Get, UseGuards, Query } from '@nestjs/common';
-import { GithubSyncService } from '../services/github-sync.service';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { PullRequestEntity } from '../entities/pull-request.enity';
+import { PullRequestEntity } from '../entities/pull-request.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PaginationQueryDto } from './pagination-query.dto';
+import { PaginationQueryDto } from '../dto/pagination-query.dto';
+import { GithubSyncService } from '../../sync/services/github-sync.service';
 
 @Controller('pull-requests') // Ez lesz az URL alapja: /api/pull-requests
 export class PullRequestsController {
@@ -12,7 +12,6 @@ export class PullRequestsController {
   // Szintén Dependency Injection: A NestJS automatikusan átadja a Controllernek a Service-t
   constructor(
     private readonly githubSyncService: GithubSyncService,
-    private readonly pullRequestsService: GithubSyncService,
     @InjectRepository(PullRequestEntity)
     private readonly prRepository: Repository<PullRequestEntity>,
   ) {}

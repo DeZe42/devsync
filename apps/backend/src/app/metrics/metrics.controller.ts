@@ -1,5 +1,5 @@
 import { Controller, Get } from "@nestjs/common";
-import { GithubSyncService } from "../services/github-sync.service";
+import { GithubSyncService } from "../sync/services/github-sync.service";
 
 @Controller('metrics') // Ez lesz az URL alapja: /api/pull-requests
 export class MetricsController {

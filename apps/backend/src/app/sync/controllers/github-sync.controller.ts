@@ -1,7 +1,7 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
-import { SyncPullRequestsDto } from './sync-pull0requests.dto';
+import { SyncPullRequestsDto } from '../dto/sync-pull-requests.dto';
 
 @Controller('sync')
 export class GithubSyncController {
