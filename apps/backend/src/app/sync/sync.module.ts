@@ -6,9 +6,11 @@ import { GithubSyncController } from './controllers/github-sync.controller';
 import { GithubSyncService } from './services/github-sync.service';
 import { GithubSyncProcessor } from './processors/github-sync.processor';
 import { SyncEventsGateway } from './gateaways/sync-events.gateway';
+import { AiModule } from '../ai/ai.module';
 
 @Module({
   imports: [
+    AiModule,
     TypeOrmModule.forFeature([PullRequestEntity]),
     BullModule.registerQueue({
       name: 'github-sync-queue',

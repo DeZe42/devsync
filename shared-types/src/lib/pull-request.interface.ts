@@ -8,6 +8,7 @@ export interface PullRequest {
   leadTime: number;
   mergedAt: Date | null;
   openedAt: Date | null;
+  aiRiskScore?: number;
 }
 
 // Ezt várjuk a GitHub API-tól. Csak azokat a mezőket írjuk le, amiket tényleg használunk is!
@@ -19,4 +20,10 @@ export interface GithubApiPullRequest {
   };
   created_at: string; // ISO Dátum string
   merged_at: string | null; // ISO Dátum string vagy null
+}
+
+export interface GithubPullRequestDetails {
+  additions: number;
+  deletions: number;
+  changed_files: number;
 }
