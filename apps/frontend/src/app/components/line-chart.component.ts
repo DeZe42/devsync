@@ -24,7 +24,12 @@ export class LineChartComponent implements OnInit {
   private chart: Chart | undefined;
 
   ngOnInit() {
-    this.createChart();
+    if (this.chartCanvas?.nativeElement) {
+      const ctx = this.chartCanvas.nativeElement.getContext('2d');
+      if (ctx) {
+        this.createChart();
+      }
+    }
   }
 
   constructor() {
