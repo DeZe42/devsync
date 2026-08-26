@@ -25,9 +25,6 @@ export class PullRequestEntity implements PullRequest {
   @Column({ type: 'int', default: 0 })
   leadTime!: number;
 
-  // --- SENIOR BÓNUSZ ---
-  // Egy igazi rendszerben mindig tudnunk kell, mikor jött létre és mikor frissült egy rekord.
-  // Ezt a TypeORM automatikusan kezeli nekünk, ha ezeket a dekorátorokat használjuk!
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
@@ -39,4 +36,7 @@ export class PullRequestEntity implements PullRequest {
 
   @Column({ type: 'timestamp', nullable: true })
   openedAt!: Date | null;
+
+  @Column({ type: 'int', nullable: true })
+  aiRiskScore!: number;
 }
