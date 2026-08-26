@@ -1,15 +1,15 @@
 import { Route } from '@angular/router';
-import { Layout } from './layout/layout';
-import { Dashboard } from './dashboard/dashboard';
-import { Settings } from './settings/settings';
+import { LayoutComponent } from './layout/layout.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { SettingsComponent } from './settings/settings.component';
 
 export const appRoutes: Route[] = [
     {
     path: '',
-    component: Layout,
+    component: LayoutComponent,
     children: [
-      { path: 'dashboard', component: Dashboard },
-      { path: 'settings', component: Settings },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'settings', component: SettingsComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
