@@ -7,6 +7,7 @@ import { PullRequestsModule } from './pull-requests/pull-requests.module';
 import { AuthModule } from './auth/auth.module';
 import { BullModule } from '@nestjs/bullmq';
 import { MetricsModule } from './metrics/metrics.module';
+import { AiModule } from './ai/ai.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { MetricsModule } from './metrics/metrics.module';
     PullRequestsModule,
     MetricsModule,
     AuthModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
