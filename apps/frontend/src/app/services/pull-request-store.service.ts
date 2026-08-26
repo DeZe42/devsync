@@ -1,5 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { PullRequestService } from './pull-request.service';
+import { PullRequest } from '@devsync/shared-types';
 
 @Injectable({
   providedIn: 'root',
@@ -8,7 +9,7 @@ export class PullRequestStoreService {
   private prService = inject(PullRequestService);
 
   // 1. A WritableSignal, ami magában tartja a PR listát és a betöltési státuszt
-  private readonly _pullRequests = signal<any[]>([]);
+  private readonly _pullRequests = signal<PullRequest[]>([]);
   private readonly _loading = signal<boolean>(false);
 
   // 2. Publikusan olvasható (readonly) signalok a komponensek számára
