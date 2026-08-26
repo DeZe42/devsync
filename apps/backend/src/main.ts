@@ -12,11 +12,16 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(
-  new ValidationPipe({
-    whitelist: true, // Automatikusan eldobja a felesleges (DTO-ban nem szereplő) adatokat
-    forbidNonWhitelisted: true, // Egyből hibát dob, ha ismeretlen mezőt küldenek
-  }),
-);
+    new ValidationPipe({
+      whitelist: true, // Automatikusan eldobja a felesleges (DTO-ban nem szereplő) adatokat
+      forbidNonWhitelisted: true, // Egyből hibát dob, ha ismeretlen mezőt küldenek
+    }),
+  );
+  app.enableCors({
+    origin: 'http://localhost:4200', // Engedélyezzük a frontend portját (vagy írhatsz ide '*' jelet is teszteléshez)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+  });
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(
